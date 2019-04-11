@@ -1,3 +1,5 @@
+//Credit: The base code of boid is use from mick maus -> https://www.youtube.com/watch?v=QbUPfMXXQIY
+
 Boid barry;
 ArrayList<Boid> boids;
 ArrayList<Avoid> avoids;
@@ -171,26 +173,9 @@ void recalculateConstants () {
 }
 
 
-//void setupWalls() {
-//  avoids = new ArrayList<Avoid>();
-//   for (int x = 0; x < width; x+= 20) {
-//    avoids.add(new Avoid(x, 10));
-//    avoids.add(new Avoid(x, height - 10));
-//  } 
-//}
-
-//void setupCircle() {
-//  avoids = new ArrayList<Avoid>();
-//   for (int x = 0; x < 50; x+= 1) {
-//     float dir = (x / 50.0) * TWO_PI;
-//    avoids.add(new Avoid(width * 0.5 + cos(dir) * height*.4, height * 0.5 + sin(dir)*height*.4));
-//  } 
-//}
-
-
 void draw () {
   noStroke();
- // colorMode(HSB);
+  colorMode(HSB);
   fill(0, 100);
  background(255);
  // rect(0, 0, width, height);
@@ -392,6 +377,18 @@ String s(int count) {
 String on(boolean in) {
   return in ? "on" : "off"; 
 }
+void mouseDragged(){
+   for (int i = obstacle.size()-1; i > -1; i--) {
+    PVector b = obstacle.get(i);
+    if (abs(b.x - mouseX) < eraseRadius && abs(b.y - mouseY) < eraseRadius) {
+      obstacle.get(i).x = mouseX;
+      obstacle.get(i).y = mouseY;
+    }
+  }
+
+
+
+}
 
 void mousePressed () {
   //obstacle.add(new PVector(mouseX, mouseY));
@@ -400,7 +397,8 @@ void mousePressed () {
   case "boids":
   //  boids.add(new Boid(mouseX, mouseY));
     obstacle.add(new PVector(mouseX, mouseY));
-    message(boids.size() + " Total Boid" + s(boids.size()));
+
+  
     break;
   case "avoids":
     avoids.add(new Avoid(mouseX, mouseY));
