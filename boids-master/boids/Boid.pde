@@ -4,7 +4,7 @@ class Boid {
   PVector move;
   float shade;
   ArrayList<Boid> friends;
-
+  int currentGoal;
   // timers
   int thinkTimer = 0;
 
@@ -17,9 +17,10 @@ class Boid {
     thinkTimer = int(random(10));
     shade = random(255);
     friends = new ArrayList<Boid>();
+    currentGoal = -1;
   }
 
-  void go () {
+  void go (int index) {
     increment();
     wrap();
 
@@ -27,17 +28,31 @@ class Boid {
       // update our friend array (lots of square roots)
       getFriends();
     }
-    flock();
+    flock(index);
     pos.add(move);
+    if (currentGoal != -1 && currentGoal != 0 &&PVector.dist(result.get(index)
+    .get(currentGoal).location, pos) < 10) {
+      currentGoal--;
+    }
+    for (PVector obs: obstacle) {
+      if (PVector.dist(obs, pos) < 28) {
+        while(PVector.dist(obs, pos) < 28) {
+          pos.add(PVector.sub(pos, obs).normalize());
+        }
+      }
+    }
   }
 
-  void flock () {
+  void flock (int index) {
     PVector allign = getAverageDir();
     PVector avoidDir = getAvoidDir(); 
     PVector avoidObjects = getAvoidAvoids();
     PVector noise = new PVector(random(2) - 1, random(2) -1);
     PVector cohese = getCohesion();
-
+    if (currentGoal == -1) {
+      currentGoal = result.get(index).size() - 1;
+    }
+    PVector goalForce = PVector.sub(result.get(index).get(currentGoal).location, pos).normalize();
     allign.mult(1);
     if (!option_friend) allign.mult(0);
     
@@ -54,12 +69,13 @@ class Boid {
     if (!option_cohese) cohese.mult(0);
     
     stroke(0, 255, 160);
-
+    goalForce.mult(2);
     move.add(allign);
     move.add(avoidDir);
     move.add(avoidObjects);
     move.add(noise);
     move.add(cohese);
+    move.add(goalForce);
 
     move.limit(maxSpeed);
     

@@ -8,7 +8,7 @@ class Node{
   
   void display() {
    
-    fill(255,255,0);//change color
+    fill(30,255,100);//change color
    
     //point(10,10);
     stroke(50);
@@ -35,7 +35,7 @@ class Node{
   
   void showPath(){
     pushMatrix();
-      fill(34,139,34);//change color
+      fill(255,69,0);//change color
       ellipse(location.x, location.y, 15, 15);
       popMatrix();
   }
